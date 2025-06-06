@@ -20,6 +20,7 @@ export default function EsignLogin({ onSuccess }) {
 
   // --- 3) Данные для FILE (ACCK / "Дія") ---
   const fileRef = useRef(null);
+  const [fileName, setFileName] = useState('');
 
   // 3.1) Список CA-провайдеров (из CAs.json)
   const [caList, setCaList] = useState([]); // [{ id: 'AcskCSD', name: 'Дія' }, …]
@@ -212,7 +213,16 @@ export default function EsignLogin({ onSuccess }) {
       {/* Поле с файлом приватного ключа */}
       <div style={{ marginBottom: 8 }}>
         <label style={{ display: 'block', marginBottom: 4 }}>Personal key (PFX / DAT / ZS2):</label>
-        <input type="file" ref={fileRef} accept=".pfx,.dat,.zs2" style={{ width: '100%' }} />
+        <input
+          type="file"
+          ref={fileRef}
+          accept=".pfx,.dat,.zs2"
+          onChange={(e) => setFileName(e.target.files?.[0]?.name || '')}
+          style={{ width: '100%' }}
+        />
+        {fileName && (
+          <div style={{ marginTop: 4, fontSize: 12 }}>{fileName}</div>
+        )}
       </div>
 
       {/* Поле с паролем */}
@@ -340,6 +350,7 @@ export default function EsignLogin({ onSuccess }) {
                 setSelectedCaId('');
                 setTokenIndex(0);
                 setClientId('');
+                setFileName('');
               }}
             />{' '}
             {val}
