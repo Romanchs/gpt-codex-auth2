@@ -17,17 +17,21 @@ export const baseQuery = fetchBaseQuery({
 export const checkRefreshQuery = async (args, api, extraOptions) => {
   await refreshToken();
   return baseQuery(args, api, extraOptions);
-}
+};
 
 export const mainApi = createApi({
   reducerPath: 'mainApi',
   baseQuery: checkRefreshQuery,
   endpoints: (build) => ({
     esignChallenge: build.mutation({
-      query: () => ({ url: '/ms-users/api/v1/token/esign/challenge/', method: 'POST' }),
+      query: () => ({ url: '/ms-users/api/v1/token/esign/challenge/', method: 'POST' })
     }),
     esignLogin: build.mutation({
-      query: (body) => ({ url: '/ms-users/api/v1/token/esign/confirm/', method: 'POST', body }),
+      query: ({ state, ...body }) => ({
+        url: `/ms-users/api/v1/token/esign/confirm/?state=${encodeURIComponent(state)}`,
+        method: 'POST',
+        body
+      })
     }),
     publicCompaniesList: build.query({
       query: (params) => ({
@@ -106,5 +110,5 @@ export const {
   useReferenceBookKeyQuery,
   useLazyMsFilesDownloadQuery,
   useReferenceBookCompactQuery,
-  useUpdateLanguageMutation,
+  useUpdateLanguageMutation
 } = mainApi;
