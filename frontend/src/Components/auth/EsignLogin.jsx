@@ -45,8 +45,8 @@ export default function EsignLogin({ onSuccess }) {
     if (mode === MODES.file) {
       (async () => {
         try {
-          // 7.1) Получаем JSON-файл: предполагаем, что он лежит по пути /public/eusign/Data/CAs.json
-          const resp = await fetch('/eusign/Data/CAs.json');
+          // 7.1) Получаем JSON-файл: предполагаем, что он лежит по пути /public/eusign/data/CAs.json
+          const resp = await fetch('/eusign/data/CAs.json');
           if (!resp.ok) throw new Error(`Ошибка ${resp.status} при загрузке CAs.json`);
 
           const json = await resp.json();
