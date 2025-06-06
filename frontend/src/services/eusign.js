@@ -3,6 +3,7 @@
 class EUSignService {
   #eu = null;
   #ready = null;
+  #libReady = null;
 
   /**
    * Настраивает хранилище ключей в зависимости от выбранного ЦСК.
@@ -64,15 +65,34 @@ class EUSignService {
   }
 
   /** 1) Подгружаем euscpt.js, euscpm.js, euscp.js из /public/eusign/js/ */
-  loadLib() {
-    const add = (filename) =>
-      new Promise((resolve) => {
-        const script = document.createElement('script');
-        script.src = `/eusign/js/${filename}`;
-        script.onload = resolve;
-        document.body.appendChild(script);
-      });
-    return Promise.all(['euscpt.js', 'euscpm.js', 'euscp.js'].map(add));
+  async loadLib() {
+    if (this.#libReady) return this.#libReady;
+
+    this.#libReady = new Promise((resolve, reject) => {
+      window.EUSignCPModuleInitialized = (ok) =>
+        ok ? resolve() : reject(new Error('EUSign init failed'));
+
+      const add = (filename) =>
+        new Promise((res, rej) => {
+          const script = document.createElement('script');
+          script.src = `/eusign/js/${filename}`;
+          script.onload = res;
+          script.onerror = rej;
+          document.body.appendChild(script);
+        });
+
+      (async () => {
+        try {
+          for (const f of ['euscpt.js', 'euscpm.js', 'euscp.js']) {
+            await add(f);
+          }
+        } catch (e) {
+          reject(e);
+        }
+      })();
+    });
+
+    return this.#libReady;
   }
 
   /** 2) Инициализируем EUSignJS (EndUser), proxy, CA-файлы и (по желанию) файловое хранилище */
@@ -81,15 +101,34 @@ class EUSignService {
 
     this.#ready = (async () => {
       await this.loadLib();
-      // В monolithic-версии воркер создаётся внутри EndUser()
-      this.#eu = new window.EndUser();
+      // В разных сборках библиотека экспортирует либо EndUser, либо EUSignCP
+      if (typeof window.EndUser === 'function') {
+        this.#eu = new window.EndUser();
+      } else if (typeof window.EUSignCP === 'function') {
+        this.#eu = window.EUSignCP();
+      } else {
+        throw new Error('EUSign library not loaded');
+      }
       await this.#eu.Initialize();
 
-      // 2.1) Proxy-сервис
-      await this.#eu.SetXMLHTTPProxyService('/eu.proxy');
+      // 2.1) Базовые параметры
+      this.#eu.SetCharset('UTF-8');
+      this.#eu.SetJavaStringCompliant(true);
 
       // 2.2) CA-файлы
       await this.#eu.SetCASettings('/eusign/data/', '/eusign/data/CACertificates.p7b');
+      try {
+        const resp = await fetch('/eusign/data/CACertificates.p7b');
+        if (resp.ok) {
+          const buf = new Uint8Array(await resp.arrayBuffer());
+          await this.#eu.SaveCertificates(buf);
+        }
+      } catch {}
+
+      // 2.3) Режим офлайн
+      const modeSettings = this.#eu.CreateModeSettings();
+      modeSettings.SetOfflineMode(true);
+      await this.#eu.SetModeSettings(modeSettings);
 
       // 2.3) (опционально) Локальное файловое хранилище для сертификатов
       const fsSettings = this.#eu.CreateFileStoreSettings();
@@ -179,6 +218,23 @@ class EUSignService {
     await this.init();
     const cmsBase64 = await this.#eu.MakeCMS(challengeUint8, true);
     return cmsBase64;
+  }
+
+  /** Возвращает информацию из сертификата прочитанного приватного ключа */
+  async getUserInfo() {
+    await this.init();
+    const cert = await this.#eu.GetOwnCertificate(
+      window.EU_CERT_KEY_TYPE_DSTU4145,
+      window.EU_KEY_USAGE_DIGITAL_SIGNATURE
+    );
+    const info = cert.GetInfoEx();
+    return {
+      commonName: info.GetSubjCN(),
+      fullName: info.GetSubjFullName(),
+      edrpou: info.GetSubjEDRPOUCode(),
+      drfo: info.GetSubjDRFOCode(),
+      issuer: info.GetIssuerCN()
+    };
   }
 }
 

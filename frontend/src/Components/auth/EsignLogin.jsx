@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { eusign } from '../../services/eusign';
-import { useEsignChallengeMutation, useEsignLoginMutation } from '../../app/mainApi';
+// Логика входа через сервер не используется
 import { BlueButton } from '../Theme/Buttons/BlueButton';
 
 const MODES = {
@@ -11,7 +11,7 @@ const MODES = {
   cloud: 'CLOUD'
 };
 
-export default function EsignLogin({ onSuccess }) {
+export default function EsignLogin() {
   // --- 1) Вид вкладки: FILE | TOKEN | CLOUD ---
   const [mode, setMode] = useState(MODES.file);
 
@@ -36,12 +36,8 @@ export default function EsignLogin({ onSuccess }) {
   const [cloudProviderId, setCloudProviderId] = useState('iit-cloud');
   const [clientId, setClientId] = useState('');
 
-  // --- 6) Состояние для challenge/state ---
-  const [challengeData, setChallengeData] = useState({ challenge: null, state: null });
-
-  // --- 7) RTK Query мутации ---
-  const [getChallenge] = useEsignChallengeMutation();
-  const [loginEsign] = useEsignLoginMutation();
+  // --- 6) Для отладки храним данные сертификата ---
+  const [certInfo, setCertInfo] = useState(null);
 
   // ========== Загрузка CA-списка при входе в режим FILE или TOKEN ==========
   useEffect(() => {
@@ -114,63 +110,26 @@ export default function EsignLogin({ onSuccess }) {
   // ========== Обработчик кнопки "Увійти КЕП" ==========
   const handleSubmit = async () => {
     try {
-      // 1) Генерируем state и запрашиваем challenge у бэкенда
-      const generatedState = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      const response = await getChallenge({ state: generatedState }).unwrap();
-      console.log(response);
-      // Ожидаем { challenge: "Base64...", state: "randomString" }
-      const { challenge, state: returnedState } = response;
-      const stateValue = returnedState || generatedState;
-      setChallengeData({ challenge, state: stateValue });
-
-      // 2) Переводим Base64 → Uint8Array
-      const challengeUint8 = Uint8Array.from(atob(challenge), (c) => c.charCodeAt(0));
-
-      // 3) В зависимости от режима, готовим ключ к подписи:
-
       if (mode === MODES.file) {
-        // 3.1) Проверяем, что файл выбран
         const file = fileRef.current?.files?.[0];
         if (!file) {
-          return alert('Будь ласка, виберіть файл із приватним ключем (.pfx, .dat, .zs2).');
+          return alert("Будь ласка, виберіть файл із приватним ключем (.pfx, .dat, .zs2).");
         }
-
-        // 3.2) Настраиваем хранилище ключей в зависимости от выбранного ЦСК
-        //     (или автопошуку) перед чтением приватного ключа.
         await eusign.readPrivateKeyFile(file, password, selectedCaId, detectAutoCa);
       } else if (mode === MODES.token) {
-        // 3.4) Токен: передаём индекс токена и пароль
         await eusign.selectTokenProvider(tokenIndex, password, selectedCaId, detectAutoCa);
       } else if (mode === MODES.cloud) {
-        // 3.5) Хмара: передаём идентификатор провайдера и clientId
         if (!clientId) {
-          return alert('Будь ласка, введіть Client ID для CLOUD-провайдера.');
+          return alert("Будь ласка, введіть Client ID для CLOUD-провайдера.");
         }
         await eusign.selectCloudProvider(cloudProviderId, clientId);
       }
-
-      // 4) Подписываем challenge → получаем CMS (Base64)
-      const cms = await eusign.sign(challengeUint8);
-
-      // 5) Формируем тело confirm-запроса
-      const payload = {
-        cms
-      };
-
-      // 5.1) Добавляем поле ca при режимах FILE и TOKEN
-      if (mode === MODES.file || mode === MODES.token) {
-        payload.ca = detectAutoCa ? 'auto' : selectedCaId;
-      }
-      // 6) Отправляем confirm-запрос на бэкенд
-      const { access, refresh } = await loginEsign({ ...payload, state: stateValue }).unwrap();
-
-      // 7) Сохраняем токены и вызываем onSuccess
-      localStorage.setItem('auth_token', access);
-      localStorage.setItem('refresh_token', refresh);
-      onSuccess?.();
+      const info = await eusign.getUserInfo();
+      setCertInfo(info);
+      console.log("EUSign user info:", info);
     } catch (err) {
-      console.error('Помилка входу через КЕП:', err);
-      alert('Помилка входу через КЕП. Перевірте налаштування та спробуйте ще раз.');
+      console.error("Помилка входу через КЕП:", err);
+      alert("Помилка входу через КЕП. Перевірте налаштування та спробуйте ще раз.");
     }
   };
 
