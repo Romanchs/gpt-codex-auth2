@@ -28,6 +28,7 @@ export default function EsignLogin({ onSuccess }) {
 
   // --- 4) Данные для TOKEN ---
   const [tokenIndex, setTokenIndex] = useState(0);
+  const [tokenProviders, setTokenProviders] = useState([]);
 
   // --- 5) Данные для CLOUD ---
   const [cloudProviderId, setCloudProviderId] = useState('iit-cloud');
@@ -72,6 +73,19 @@ export default function EsignLogin({ onSuccess }) {
         } catch (err) {
           console.error('Не удалось загрузить список CA из CAs.json:', err);
           setCaList([]);
+        }
+      })();
+    }
+
+    if (mode === MODES.token) {
+      (async () => {
+        try {
+          const list = await eusign.listTokenProviders();
+          setTokenProviders(list);
+          if (list.length) setTokenIndex(list[0].index);
+        } catch (err) {
+          console.error('Не удалось получить список токенов:', err);
+          setTokenProviders([]);
         }
       })();
     }
@@ -226,6 +240,22 @@ export default function EsignLogin({ onSuccess }) {
           </option>
         ))}
       </select>
+
+      {/* Выбор токен-провайдера */}
+      <div style={{ marginBottom: 8 }}>
+        <label style={{ display: 'block', marginBottom: 4 }}>Token provider:</label>
+        <select
+          value={tokenIndex}
+          onChange={(e) => setTokenIndex(Number(e.target.value))}
+          style={{ width: '100%', padding: '6px' }}
+        >
+          {tokenProviders.map((tp) => (
+            <option key={tp.index} value={tp.index}>
+              {tp.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div style={{ marginBottom: 8 }}>
         <label style={{ display: 'block', marginBottom: 4 }}>Password:</label>
