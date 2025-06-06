@@ -71,6 +71,32 @@ class EUSignService {
     await this.#eu.ReadPrivateKey(password);
   }
 
+  /**
+   * Возвращает список доступных токен-провайдеров.
+   * Каждый элемент имеет форму { index: number, name: string }.
+   */
+  async listTokenProviders() {
+    await this.init();
+    try {
+      const count = await this.#eu.GetProtectedCMSProvidersCount();
+      const list = [];
+      for (let i = 0; i < count; i++) {
+        let name = `#${i}`;
+        try {
+          const info = await this.#eu.GetProtectedCMSProviderInfo(i);
+          if (info?.GetName) name = info.GetName();
+        } catch (e) {
+          // ignore errors when fetching provider info
+        }
+        list.push({ index: i, name });
+      }
+      return list;
+    } catch (err) {
+      console.error('Failed to get token providers:', err);
+      return [];
+    }
+  }
+
   // ======================================
   // 5) Методы для вкладки «CLOUD»
   // ======================================
