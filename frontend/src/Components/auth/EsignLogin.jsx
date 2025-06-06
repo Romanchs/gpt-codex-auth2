@@ -113,16 +113,24 @@ export default function EsignLogin({ onSuccess }) {
           return alert('Будь ласка, виберіть файл із приватним ключем (.pfx, .dat, .zs2).');
         }
 
-        // 3.2) Если чек-бокс Detect automatically активен, ничего не делаем с file/CA.
-        //      Иначе, сохраняем выбор пользователя (CA) в confirmPayload ниже (caId или 'auto').
-
-        // 3.3) Читаем приватный ключ:
-        await eusign.readPrivateKeyFile(file, password);
+        // 3.2) Настраиваем хранилище ключей в зависимости от выбранного ЦСК
+        //     (или автопошуку) перед чтением приватного ключа.
+        await eusign.readPrivateKeyFile(
+          file,
+          password,
+          selectedCaId,
+          detectAutoCa
+        );
       }
 
       else if (mode === MODES.token) {
         // 3.4) Токен: передаём индекс токена и пароль
-        await eusign.selectTokenProvider(tokenIndex, password);
+        await eusign.selectTokenProvider(
+          tokenIndex,
+          password,
+          selectedCaId,
+          detectAutoCa
+        );
       }
 
       else if (mode === MODES.cloud) {
@@ -142,8 +150,8 @@ export default function EsignLogin({ onSuccess }) {
         state,
       };
 
-      // 5.1) Добавляем поле ca, если режим FILE
-      if (mode === MODES.file) {
+      // 5.1) Добавляем поле ca при режимах FILE и TOKEN
+      if (mode === MODES.file || mode === MODES.token) {
         payload.ca = detectAutoCa ? 'auto' : selectedCaId;
       }
       // 6) Отправляем confirm-запрос на бэкенд
