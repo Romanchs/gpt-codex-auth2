@@ -30,7 +30,7 @@ class EUSignService {
       await this.#eu.SetXMLHTTPProxyService('/eu.proxy');
 
       // 2.2) CA-файлы
-      await this.#eu.SetCASettings('/eusign/Data/', '/eusign/Data/CACertificates.p7b');
+      await this.#eu.SetCASettings('/eusign/data/', '/eusign/data/CACertificates.p7b');
 
       // 2.3) (опционально) Локальное файловое хранилище для сертификатов
       await this.#eu.SetFileStoreSettings(true, '/eusign/FileStore/');
