@@ -33,7 +33,10 @@ class EUSignService {
       await this.#eu.SetCASettings('/eusign/data/', '/eusign/data/CACertificates.p7b');
 
       // 2.3) (опционально) Локальное файловое хранилище для сертификатов
-      await this.#eu.SetFileStoreSettings(true, '/eusign/FileStore/');
+      const fsSettings = this.#eu.CreateFileStoreSettings();
+      fsSettings.SetSaveLoadedCerts(true);
+      fsSettings.SetPath('/eusign/FileStore/');
+      await this.#eu.SetFileStoreSettings(fsSettings);
     })();
 
     return this.#ready;
