@@ -2,13 +2,13 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { eusign } from '../../services/eusign';
-import {useEsignChallengeMutation, useEsignLoginMutation} from "../../app/mainApi";
-import {BlueButton} from "../Theme/Buttons/BlueButton";
+import { useEsignChallengeMutation, useEsignLoginMutation } from '../../app/mainApi';
+import { BlueButton } from '../Theme/Buttons/BlueButton';
 
 const MODES = {
   file: 'FILE',
   token: 'TOKEN',
-  cloud: 'CLOUD',
+  cloud: 'CLOUD'
 };
 
 export default function EsignLogin({ onSuccess }) {
@@ -31,6 +31,7 @@ export default function EsignLogin({ onSuccess }) {
   const [tokenProviders, setTokenProviders] = useState([]);
 
   // --- 5) Данные для CLOUD ---
+  const [cloudProviders, setCloudProviders] = useState([{ id: 'iit-cloud', name: 'ІІТ – хмарний підпис (2)' }]);
   const [cloudProviderId, setCloudProviderId] = useState('iit-cloud');
   const [clientId, setClientId] = useState('');
 
@@ -53,16 +54,14 @@ export default function EsignLogin({ onSuccess }) {
           const json = await resp.json();
           const list = Array.isArray(json)
             ? json.map((entry) => {
-              // Вытаскиваем первый элемент issuerCNs, если он есть и не пустой
-              const firstCN =
-                Array.isArray(entry.issuerCNs) && entry.issuerCNs.length > 0
-                  ? entry.issuerCNs[0]
-                  : null;
-              // В качестве id возьмём "address" (можно заменить на codeEDRPOU, если бэкенд требует именно его)
-              const id = entry.address || entry.codeEDRPOU || '';
-              const name = firstCN || id;
-              return { id, name };
-            })
+                // Вытаскиваем первый элемент issuerCNs, если он есть и не пустой
+                const firstCN =
+                  Array.isArray(entry.issuerCNs) && entry.issuerCNs.length > 0 ? entry.issuerCNs[0] : null;
+                // В качестве id возьмём "address" (можно заменить на codeEDRPOU, если бэкенд требует именно его)
+                const id = entry.address || entry.codeEDRPOU || '';
+                const name = firstCN || id;
+                return { id, name };
+              })
             : [];
 
           setCaList(list);
@@ -86,6 +85,26 @@ export default function EsignLogin({ onSuccess }) {
         } catch (err) {
           console.error('Не удалось получить список токенов:', err);
           setTokenProviders([]);
+        }
+      })();
+    }
+  }, [mode]);
+
+  // Загрузка списка cloud-провайдеров при выборе вкладки CLOUD
+  useEffect(() => {
+    if (mode === MODES.cloud) {
+      (async () => {
+        try {
+          const resp = await fetch('/eusign/data/Clouds.json');
+          if (resp.ok) {
+            const json = await resp.json();
+            if (Array.isArray(json) && json.length) {
+              setCloudProviders(json.map((p) => ({ id: p.id, name: p.name })));
+              setCloudProviderId(json[0].id);
+            }
+          }
+        } catch (err) {
+          console.error('Не удалось загрузить список cloud провайдеров:', err);
         }
       })();
     }
@@ -115,25 +134,11 @@ export default function EsignLogin({ onSuccess }) {
 
         // 3.2) Настраиваем хранилище ключей в зависимости от выбранного ЦСК
         //     (или автопошуку) перед чтением приватного ключа.
-        await eusign.readPrivateKeyFile(
-          file,
-          password,
-          selectedCaId,
-          detectAutoCa
-        );
-      }
-
-      else if (mode === MODES.token) {
+        await eusign.readPrivateKeyFile(file, password, selectedCaId, detectAutoCa);
+      } else if (mode === MODES.token) {
         // 3.4) Токен: передаём индекс токена и пароль
-        await eusign.selectTokenProvider(
-          tokenIndex,
-          password,
-          selectedCaId,
-          detectAutoCa
-        );
-      }
-
-      else if (mode === MODES.cloud) {
+        await eusign.selectTokenProvider(tokenIndex, password, selectedCaId, detectAutoCa);
+      } else if (mode === MODES.cloud) {
         // 3.5) Хмара: передаём идентификатор провайдера и clientId
         if (!clientId) {
           return alert('Будь ласка, введіть Client ID для CLOUD-провайдера.');
@@ -146,8 +151,7 @@ export default function EsignLogin({ onSuccess }) {
 
       // 5) Формируем тело confirm-запроса
       const payload = {
-        cms,
-        state,
+        cms
       };
 
       // 5.1) Добавляем поле ca при режимах FILE и TOKEN
@@ -155,7 +159,7 @@ export default function EsignLogin({ onSuccess }) {
         payload.ca = detectAutoCa ? 'auto' : selectedCaId;
       }
       // 6) Отправляем confirm-запрос на бэкенд
-      const { access, refresh } = await loginEsign(payload).unwrap();
+      const { access, refresh } = await loginEsign({ ...payload, state }).unwrap();
 
       // 7) Сохраняем токены и вызываем onSuccess
       localStorage.setItem('auth_token', access);
@@ -257,11 +261,17 @@ export default function EsignLogin({ onSuccess }) {
           onChange={(e) => setTokenIndex(Number(e.target.value))}
           style={{ width: '100%', padding: '6px' }}
         >
-          {tokenProviders.map((tp) => (
-            <option key={tp.index} value={tp.index}>
-              {tp.name}
+          {tokenProviders.length ? (
+            tokenProviders.map((tp) => (
+              <option key={tp.index} value={tp.index}>
+                {tp.name}
+              </option>
+            ))
+          ) : (
+            <option value="" disabled>
+              No tokens detected
             </option>
-          ))}
+          )}
         </select>
       </div>
 
@@ -287,8 +297,11 @@ export default function EsignLogin({ onSuccess }) {
           onChange={(e) => setCloudProviderId(e.target.value)}
           style={{ width: '100%', padding: '6px' }}
         >
-          <option value="iit-cloud">ІІТ – хмарний підпис (2)</option>
-          {/* Здесь можно добавить другие cloud-провайдеры */}
+          {cloudProviders.map((cp) => (
+            <option key={cp.id} value={cp.id}>
+              {cp.name}
+            </option>
+          ))}
         </select>
       </div>
 
