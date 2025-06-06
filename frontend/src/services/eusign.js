@@ -123,7 +123,10 @@ class EUSignService {
           const buf = new Uint8Array(await resp.arrayBuffer());
           await this.#eu.SaveCertificates(buf);
         }
-      } catch {}
+      } catch (err) {
+        // Preloading CA certificates is optional; log and continue if it fails
+        console.warn('Failed to preload CA certificates:', err);
+      }
 
       // 2.3) Режим офлайн
       const modeSettings = this.#eu.CreateModeSettings();
