@@ -116,7 +116,9 @@ class EUSignService {
       this.#eu.SetJavaStringCompliant(true);
 
       // 2.2) CA-файлы
-      await this.#eu.SetCASettings('/eusign/data/', '/eusign/data/CACertificates.p7b');
+      if (typeof this.#eu.SetCASettings === 'function') {
+        await this.#eu.SetCASettings('/eusign/data/', '/eusign/data/CACertificates.p7b');
+      }
       try {
         const resp = await fetch('/eusign/data/CACertificates.p7b');
         if (resp.ok) {
