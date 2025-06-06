@@ -1,0 +1,323 @@
+import Box from '@material-ui/core/Box';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import SearchIcon from '@mui/icons-material/SearchRounded';
+import { noop } from 'lodash';
+import { useState } from 'react';
+
+import { ReactComponent as Logo } from '../../images/logo_bg.svg';
+import { getEnv } from '../../util/getEnv';
+import { BlueButton } from '../Theme/Buttons/BlueButton';
+import { GreenButton } from '../Theme/Buttons/GreenButton';
+import StyledInput from '../Theme/Fields/StyledInput';
+import Toggle from '../Theme/Fields/Toggle';
+import { ModalWrapper } from './ModalWrapper';
+import { ResponseForm } from './ImportTkoModal';
+import { useTranslation } from 'react-i18next';
+import { t } from 'i18next';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    marginTop: 16
+  },
+  label: {
+    width: '100%',
+    paddingTop: 12,
+    display: 'block',
+
+    '& p': {
+      color: '#555',
+      marginBottom: 5,
+
+      '&.error': {
+        color: '#f90000',
+        fontWeight: 500,
+        fontSize: 12
+      }
+    }
+  },
+  button: {
+    textTransform: 'none',
+    width: '100%',
+    color: theme.palette.primary.dark,
+    borderColor: theme.palette.primary.dark,
+    '& svg': {
+      marginRight: 8,
+      fontSize: 16
+    }
+  },
+  buttonError: {
+    textTransform: 'none',
+    width: '100%',
+    color: '#f90000',
+    borderColor: '#f90000',
+    '& svg': {
+      marginRight: 8,
+      fontSize: 16
+    }
+  },
+  buttonLoading: {
+    textTransform: 'none',
+    width: '100%',
+    color: '#f90000',
+    borderColor: '#f90000'
+  },
+  controls: {
+    marginTop: 16,
+
+    '& button': {
+      width: '100%'
+    }
+  },
+  loading: {
+    textAlign: 'center',
+    '&>span': {
+      marginTop: 8,
+      display: 'block'
+    }
+  },
+  response: {
+    marginTop: 24
+  },
+  info: {
+    margin: '36px 0 24px'
+  }
+}));
+
+const mimeTypes = {
+  '.xls': 'application/vnd.ms-excel',
+  '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  '.xml': 'text/xml',
+  '.xlsm': 'application/vnd.ms-excel.sheet.macroenabled.12'
+};
+
+export const ImportTkoModalToggle = ({
+  open,
+  onClose,
+  loading,
+  onUpload,
+  response,
+  error,
+  canUploadWithoutKey = getEnv().env === 'dev',
+  types = ['.xls', '.xlsx', '.xlsm'],
+  customVerify
+}) => {
+  const classes = useStyles();
+  const { t } = useTranslation();
+
+  const handleUpload = (files, mode) => {
+    const formData = new FormData();
+    formData.append('file_original', files.file1.files[0]);
+    if (files.file2) {
+      formData.append('file_original_key', files.file2.files[0]);
+    }
+    onUpload(formData, mode);
+  };
+
+  const getHeader = (status, file_name) => {
+    switch (status) {
+      case 'DONE':
+        return (
+          <span>
+            {`${t('IMPORT_FILE.IMPORT_FILENAME', { name: file_name })} `}
+            <span className={'success'}>{`${t('IMPORT_FILE.SUCCESSFULLY')} `}</span>
+            {t('IMPORT_FILE.DONE')}.
+          </span>
+        );
+      case 'BAD_FILE_STRUCTURE':
+        return (
+          <span>
+            {`${t('IMPORT_FILE.IMPORT_FILENAME', { name: file_name })} ${t('IMPORT_FILE.DONE')} `}
+            <span className={'danger'}>{t('IMPORT_FILE.BAD_FILE_STRUCTURE')}</span>.
+          </span>
+        );
+      default:
+        return (
+          <span>
+            {`${t('IMPORT_FILE.IMPORT_FILENAME', { name: file_name })} ${t('IMPORT_FILE.DONE')} `}
+            <span className={'danger'}>{t('IMPORT_FILE.UNSUCCESSFULLY')}</span>.
+          </span>
+        );
+    }
+  };
+
+  return (
+    <ModalWrapper
+      open={open}
+      onClose={!loading ? onClose : noop}
+      header={response ? getHeader(response.status, response.file_name) : t('IMPORT_AP_FILES')}
+      maxWidth={'lg'}
+    >
+      <div className={classes.root}>
+        {!response && !loading && (
+          <UploadForm
+            handleUpload={handleUpload}
+            onClose={onClose}
+            errorApi={error}
+            canUploadWithoutKey={canUploadWithoutKey}
+            types={types}
+            customVerify={customVerify}
+            loading={loading}
+          />
+        )}
+        {loading && <LoadingForm />}
+        {response && <ResponseForm data={response} onClose={onClose} />}
+      </div>
+    </ModalWrapper>
+  );
+};
+
+const LoadingForm = () => {
+  const classes = useStyles();
+  const { t } = useTranslation();
+  return (
+    <div className={classes.loading}>
+      <Logo className={'pulse'} width={110} data-marker={'Loader_mask--logo'} />
+      <span>{t('PROCESSING_FILES')}...</span>
+    </div>
+  );
+};
+
+const UploadForm = ({ handleUpload, onClose, errorApi, canUploadWithoutKey, types, customVerify, loading }) => {
+  const acceptTypes = Object.keys(mimeTypes).filter((ext) => types.includes(ext));
+  const [error, setError] = useState({
+    file1: false,
+    file2: false
+  });
+  const [files, setFiles] = useState({
+    file1: undefined,
+    file2: undefined
+  });
+  const [mode, setMode] = useState(false);
+
+  const validate = (name, file) => {
+    if (customVerify) {
+      const result = customVerify(file, name);
+      if (result) return result;
+    }
+    if (file.size >= 26214400) {
+      return t('VERIFY_MSG.MAX_FILE_SIZE', { size: 25 });
+    }
+    if (name === 'file1' && acceptTypes.filter((ext) => file.name.endsWith(ext)).length === 0) {
+      return t('VERIFY_MSG.UNCORRECT_FORMAT');
+    }
+    if (name === 'file2' && !file.name.endsWith('.p7s')) {
+      return t('VERIFY_MSG.UNCORRECT_FORMAT');
+    }
+    if (name === 'file2' && file.size > 40960) {
+      return t('VERIFY_MSG.UNCORRECT_SIGNATURE');
+    }
+    return undefined;
+  };
+
+  const selectFile = (name, target) => {
+    if (target.files.length === 0) {
+      setFiles((files) => ({ ...files, [name]: null }));
+      return;
+    }
+    setError((files) => ({ ...files, [name]: validate(name, target.files[0]) }));
+    setFiles((files) => ({ ...files, [name]: target }));
+  };
+
+  const getMessage = () => {
+    if (errorApi?.response?.data?.detail && typeof errorApi?.response?.data?.detail === 'string') {
+      return errorApi?.response?.data?.detail;
+    }
+    if (Array.isArray(errorApi?.response?.data?.detail)) {
+      return errorApi?.response?.data?.detail.join('\n');
+    }
+    if (
+      errorApi?.response?.data?.detail?.file_original &&
+      typeof errorApi?.response?.data?.detail?.file_original === 'string'
+    ) {
+      return errorApi?.response?.data?.detail?.file_original;
+    }
+    if (
+      errorApi?.response?.data?.detail?.file_original &&
+      Array.isArray(errorApi?.response?.data?.detail?.file_original)
+    ) {
+      return errorApi?.response?.data?.detail?.file_original[0];
+    }
+    return JSON.stringify(errorApi?.response?.data?.detail);
+  };
+
+  return (
+    <>
+      {errorApi && <p className={'danger'}>{getMessage()}</p>}
+      <Box style={{ marginTop: 40 }}>
+        {[
+          {
+            label: t('IMPORT_FILE.SELECT_FILE_WITH_AP_INFORMAT', { format: acceptTypes.join(', ') }),
+            key: 'file1',
+            accept: acceptTypes.join(', ')
+          },
+          {
+            label: t('IMPORT_FILE.SELECT_DIGITAL_SIGNATURE_FILE'),
+            key: 'file2',
+            accept: 'application/pkcs7-signature'
+          }
+        ].map(({ label, key, accept }, index, arr) => (
+          <Box
+            style={{ display: 'flex', minWidth: 560, gap: 24, marginBottom: index === arr.length - 1 ? 16 : 24 }}
+            key={key}
+          >
+            <StyledInput
+              size={'small'}
+              value={files[key]?.files[0]?.name}
+              label={label}
+              placeholder={`${t('IMPORT_FILE.SELECT_FILE')}...`}
+              shrink={true}
+              error={error?.response?.data?.detail[key] || error[key]}
+              readOnly
+            />
+            <input
+              accept={accept}
+              id={`contained-button-file${index}`}
+              disabled={loading}
+              type="file"
+              onChange={({ target }) => selectFile(key, target)}
+            />
+            <label htmlFor={`contained-button-file${index}`}>
+              <BlueButton
+                component="span"
+                disabled={loading}
+                style={{ whiteSpace: 'nowrap', padding: '11.25px 12px', borderRadius: 8 }}
+              >
+                <SearchIcon />
+                {t('CONTROLS.CHOOSE_FILE')}
+              </BlueButton>
+            </label>
+          </Box>
+        ))}
+      </Box>
+      <Box style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        <Toggle
+          title={mode ? t('TURN_OFF_DOWNLOAD') : t('TURN_ON_DOWNLOAD')}
+          dataMarker={'uploadTypesToggle'}
+          setSelected={setMode}
+          selected={mode}
+        />
+        <span
+          data-marker={'uploadTypesText'}
+          style={{ fontWeight: 500, color: '#567691', cursor: 'pointer' }}
+          onClick={() => setMode(!mode)}
+        >
+          {t('LOADING_NEW_AP')}
+        </span>
+      </Box>
+      <Box style={{ display: 'flex', justifyContent: 'center', gap: 24, marginTop: 40 }}>
+        <BlueButton style={{ minWidth: 204, textTransform: 'uppercase' }} onClick={onClose}>
+          {t('CONTROLS.CANCEL')}
+        </BlueButton>
+        <GreenButton
+          style={{ minWidth: 204, textTransform: 'uppercase' }}
+          onClick={() => handleUpload(files, mode)}
+          disabled={
+            Boolean(error.file1) || Boolean(error.file2) || !files.file1 || !(canUploadWithoutKey || files.file2)
+          }
+        >
+          {loading ? `${t('LOADING')}...` : t('CONTROLS.DOWNLOAD')}
+        </GreenButton>
+      </Box>
+    </>
+  );
+};

@@ -1,0 +1,134 @@
+import { TableBody } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
+import Collapse from '@material-ui/core/Collapse/Collapse';
+import IconButton from '@material-ui/core/IconButton';
+import Table from '@material-ui/core/Table';
+import TableCell from '@material-ui/core/TableCell/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import KeyboardArrowDownRounded from '@mui/icons-material/KeyboardArrowDownRounded';
+import KeyboardArrowUpRounded from '@mui/icons-material/KeyboardArrowUpRounded';
+import { useState } from 'react';
+import { useRowStyles } from '../../pm/filterStyles';
+import moment from 'moment/moment';
+import CircleButton from '../../../Components/Theme/Buttons/CircleButton';
+import { useTranslation } from 'react-i18next';
+import useRefreshDataLog from '../../../services/actionsLog/useRefreshDataLog';
+import { CONSTRUCTOR_ZV_LOG_TAGS } from '../../../services/actionsLog/constants';
+
+const Row = ({ data, columns, innerColumns, settings, setSettings, handleDelete, setReusedValue }) => {
+  const { t } = useTranslation();
+  const classes = useRowStyles();
+  const [open, setOpen] = useState(false);
+  const refreshDataLog = useRefreshDataLog(CONSTRUCTOR_ZV_LOG_TAGS);
+
+  const getData = (id, value, row) => {
+    if (id === 'period_from' || id === 'period_to') {
+      return (
+        <TableCell data-marker={id} key={'cell' + id}>
+          {row?.[id] ? moment(row?.[id]).format('DD.MM.YYYY') : row?.[id]}
+        </TableCell>
+      );
+    }
+    return (
+      <TableCell data-marker={id} key={'cell' + id}>
+        {value || '-'}
+      </TableCell>
+    );
+  };
+
+  const handleReuse = (eics) => {
+    setReusedValue(eics?.map((i) => ({ ...i, value: i?.eic, label: i?.eic })));
+    setSettings({ ...settings, zv_eics: eics?.map((i) => i?.eic) });
+    refreshDataLog();
+  };
+
+  return (
+    <>
+      <TableRow className={open ? classes.rootOpen : classes.root} data-marker={'table-row'}>
+        <TableCell>
+          <IconButton
+            aria-label={'expand row'}
+            size={'small'}
+            onClick={() => setOpen(!open)}
+            className={open ? classes.expand : classes.collapse}
+            data-marker={open ? 'expand' : 'collapse'}
+          >
+            {open ? <KeyboardArrowUpRounded /> : <KeyboardArrowDownRounded />}
+          </IconButton>
+        </TableCell>
+        {columns.map(({ id, value }) => getData(id, value ? data[value] : data[id], data))}
+        <TableCell data-marker={'delete'} className={classes.cellDelete}>
+          <CircleButton
+            title={t('CONTROLS.REUSE')}
+            type={'redo'}
+            size={'small'}
+            color={'blue'}
+            onClick={() => handleReuse(data?.zv_eics)}
+          />
+        </TableCell>
+        {data?.can_deleted ? (
+          <TableCell data-marker={'delete'} className={classes.cellDelete}>
+            <CircleButton
+              title={t('CONTROLS.DELETE')}
+              dataMarker={'remove_ag'}
+              type={'remove'}
+              size={'small'}
+              color={'red'}
+              onClick={() => handleDelete(data)}
+            />
+          </TableCell>
+        ) : (
+          <TableCell></TableCell>
+        )}
+      </TableRow>
+      <TableRow className={classes.detail} data-marker={'table-row--detail'}>
+        <TableCell
+          style={{
+            paddingBottom: 8,
+            paddingTop: 0,
+            paddingLeft: 0,
+            paddingRight: 0
+          }}
+          colSpan={columns.length + 3}
+        >
+          <Collapse in={open} timeout={'auto'} unmountOnExit>
+            <Box margin={1} className={classes.detailContainer}>
+              <Table size={'small'} aria-label={'purchases'}>
+                <TableHead>
+                  <TableRow className={`${classes.head} ${classes.splitter}`}>
+                    {innerColumns.map(({ label, id }, index) => (
+                      <TableCell key={'head-cell' + index} data-marker={'head--' + id}>
+                        <pre style={{ font: 'inherit' }}>{t(label)}</pre>
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data?.zv_eics?.map((item, index) => (
+                    <TableRow
+                      key={'row' + index}
+                      className={`
+                        ${classes.body} 
+                        ${classes.innerTableRow} 
+                        ${data?.zv_eics?.length - 1 !== index && classes.splitter}
+                      `}
+                    >
+                      {innerColumns.map(({ id }, i) => (
+                        <TableCell key={'row' + i} data-marker={'body--' + id}>
+                          <pre style={{ font: 'inherit' }}>{item[id]}</pre>
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+    </>
+  );
+};
+
+export default Row;

@@ -1,0 +1,158 @@
+def branch
+def revision
+def k8s_auth
+def k8s_serverUrl
+def harbor_registry_secret = "harbor-pull-secret"
+def harbor_auth = "harbor-jenkins-user"
+def registryIP = "harbor.datahub.ua.energy"
+def app_name = params.getOrDefault(env.GITLAB_PROJECT_NAME, "tko-frontend")
+def k8s_namespace = params.getOrDefault(env.BRANCH_NAME, "develop")
+def work_branch
+def skipRemainingStages = false
+def proxy = "gitlab.datahub.ua.energy,10.0.0.0/6,.datahub.ua.energy,*.datahub.ua.energy,api.ocl02.dh.ent,api.ocl01.dh.ent,api.ocl03.dh.ent"
+
+pipeline {
+  agent any
+  options {
+    skipDefaultCheckout true
+  }
+  stages {
+    stage("Env Variables") {
+      steps {
+        script {
+        sh "echo 'Env..print ${app_name} -- ${env.BRANCH_NAME}'"
+        sh "printenv"
+        println "work_branch = ${env.GITLAB_OBJECT_KIND}" 
+        if ((env.GITLAB_OBJECT_KIND == 'push')||(env.GITLAB_OBJECT_KIND == 'merge_request'))  
+        {
+          if (env.GITLAB_OBJECT_KIND == 'push') 
+          {
+            if ((env.BRANCH_NAME == 'develop')||(env.BRANCH_NAME == 'test')||(env.BRANCH_NAME == 'stage')||(env.BRANCH_NAME == 'prod1')||(env.BRANCH_NAME == 'prod2'))
+            {
+              work_branch = env.BRANCH_NAME
+            }
+            else
+            {
+              skipRemainingStages = true
+              println "skipRemainingStages = ${skipRemainingStages}"
+              println "work_branch_push = ${env.BRANCH_NAME}"          
+            }
+          }
+          if (env.GITLAB_OBJECT_KIND == 'merge_request') 
+          {
+              skipRemainingStages = true 
+          }
+        }
+        else
+        {skipRemainingStages = true} 
+        }
+      }
+    }
+    stage ('checkout') {
+      when {
+        expression {
+            println "skipRemainingStages = ${skipRemainingStages}"          
+            !skipRemainingStages
+            }
+      }      
+      steps {
+        script {
+          def repo = checkout scm
+          revision = sh(script: 'git log -1 --format=\'%h.%ad\' --date=format:%Y%m%d-%H%M | cat',returnStdout: true).trim()
+          branch = repo.GIT_BRANCH.take(20).replaceAll('/', '_')
+          if (work_branch == 'develop') {
+            k8s_auth = 'jenkins-robot-token-tpcl4'
+            k8s_serverUrl = "https://10.176.34.24:16443"
+            k8s_namespace = 'develop'
+          } else
+          if (work_branch == 'test') {
+            k8s_auth = 'jenkins-robot-token-769dn'
+            k8s_serverUrl = "https://10.176.35.29:16443"
+            k8s_namespace = 'test'
+          } else
+          if (work_branch == 'stage') {
+            k8s_auth = "openshift-ocl03"
+            k8s_serverUrl = "https://api.ocl03.dh.ent:6443"
+            k8s_namespace = 'prod'
+          } else
+          if (work_branch == 'prod1') {
+            k8s_auth = 'openshift-ocl01'
+            k8s_serverUrl = "https://api.ocl01.dh.ent:6443"
+            k8s_namespace = 'prod'
+          } else
+//           active
+          if (work_branch == 'prod2') {
+            k8s_auth = 'openshift-ocl02'
+            k8s_serverUrl = "https://api.ocl02.dh.ent:6443"
+            k8s_namespace = 'prod'
+          } else
+          {skipRemainingStages = true}
+          sh "echo 'Building revision: ${revision}'"
+        }
+      }
+    }
+    stage('Build Docker file') {
+      when {
+        expression {
+            println "skipRemainingStages = ${skipRemainingStages}"          
+            !skipRemainingStages
+            }
+      }
+      steps {
+        sh "echo 'Building.. ${revision}'"
+        withCredentials([usernamePassword(credentialsId: "${harbor_auth}",
+          passwordVariable: 'Hpassword', usernameVariable: 'Husername')]) {
+            // space before the echo shell command will keep the password out of a workspace shell history
+          sh " echo ${Hpassword} | docker login -u ${Husername} --password-stdin ${registryIP}"
+          sh "docker build . -t ${registryIP}/tko/${app_name}/app:${revision} -f docker/Dockerfile --build-arg=http_proxy=http://d2-ipv-smwg-CL.ukrenergo.ent:9090 --build-arg=https_proxy=http://d2-ipv-smwg-CL.ukrenergo.ent:9090 --build-arg=no_proxy=10.176.23.53,gitlab.datahub.ua.energy,10.0.0.0/6,.datahub.ua.energy,*.datahub.ua.energy --add-host gitlab.datahub.ua.energy:10.176.23.53 --no-cache"
+        }
+      }
+    }
+    stage('Upload to harbor') {
+      when {
+        expression {
+            !skipRemainingStages
+            }
+      } 
+      steps {
+        sh "echo 'Upload to harbor.. ${revision}'"
+        sh "docker push ${registryIP}/tko/${app_name}/app:${revision}"
+      }
+    }
+    stage('Remove local image'){
+      when {
+        expression {
+            !skipRemainingStages
+            }
+      } 
+      steps {
+        sh "echo 'Remove local image ..'"
+        sh "echo 'Test ${registryIP}/tko/${app_name}/app:${revision}'"
+        sh "docker rmi \$(docker images --quiet ${registryIP}/tko/${app_name}/app:${revision})"
+      }
+    }
+    stage('Deploy') {
+      when {
+        expression {
+            !skipRemainingStages
+            }
+      } 
+      steps {
+        sh "echo 'Deploying...'"
+        sh """
+          sed -i 's#\$IMAGE_NAME#${registryIP}/tko/${app_name}/app:${revision}#' kubernetes/deploy.yml
+          sed -i 's#\$HARBOR_SECRET_NAME#${harbor_registry_secret}#' kubernetes/deploy.yml
+          cat kubernetes/deploy.yml
+          """
+        script {
+          withKubeCredentials([[credentialsId: "${k8s_auth}",
+            serverUrl: "${k8s_serverUrl}",namespace: "${k8s_namespace}"]]) {
+              sh "export no_proxy='${proxy}' && export NO_PROXY='${proxy}' && kubectl delete -f kubernetes/deploy.yml -n ${k8s_namespace} --ignore-not-found=true --insecure-skip-tls-verify=true"
+              sh "export no_proxy='${proxy}' && export NO_PROXY='${proxy}' && kubectl apply -f kubernetes/deploy.yml -n ${k8s_namespace} --insecure-skip-tls-verify=true"
+              sh "export no_proxy='${proxy}' && export NO_PROXY='${proxy}' && kubectl apply -f kubernetes/service_tko.yml -n ${k8s_namespace} --insecure-skip-tls-verify=true"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+export const REASONS = {
+  DISMANTLED: 'CHANGE_PPKO_REASONS.DISMANTLED',
+  HAS_PROCEDURE: 'CHANGE_PPKO_REASONS.HAS_PROCEDURE',
+  ON_AKO_REVIEW: 'CHANGE_PPKO_REASONS.ON_AKO_REVIEW',
+  PPKO_REQUEST: 'CHANGE_PPKO_REASONS.PPKO_REQUEST',
+  COMMENTS_ON_DOCUMENTS: 'CHANGE_PPKO_REASONS.COMMENTS_ON_DOCUMENTS'
+};
+
+export const DEFAULT_ROLES = {
+  meter_point_admin: 'ROLES.METERING_POINT_ADMINISTRATOR',
+  meter_data_collector: 'ROLES.METERED_DATA_COLLECTOR',
+  meter_data_responsible: 'ROLES.METERED_DATA_RESPONSIBLE',
+  meter_operator: 'ROLES.METER_OPERATOR',
+};
+
+export const SUBPROCESSES_LINKS = {
+  RECEIVING_DKO_ACTUAL: {link: '/processes/receiving-dko-actual/{uid}', text: 'SUBPROCESSES.RECEIVING_DKO_ACTUAL'},
+  RECEIVING_DKO_HISTORICAL: {link: '/processes/receiving-dko-historical/{uid}', text: 'SUBPROCESSES.REQUEST_HISTORICAL_DKO'}
+};
+
+export const REQUESTS_LINKS = {
+  ...SUBPROCESSES_LINKS,
+  REQUEST_CHANGE_PPKO_APPROVAL: {
+    link: '/processes/request-change-ppko-approval/{uid}',
+    text: 'SUBPROCESSES.REQUEST_CHANGE_PPKO_APPROVAL'
+  }
+};

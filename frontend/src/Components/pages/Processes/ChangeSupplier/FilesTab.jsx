@@ -1,0 +1,48 @@
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { downloadProcessFileById, getChangeSupplierFiles } from '../../../../actions/processesActions';
+import { UploadedFilesTable } from '../Components/UploadedFilesTable';
+import { Pagination } from '../../../Theme/Table/Pagination';
+import useExportFileLog from '../../../../services/actionsLog/useEportFileLog';
+
+const FilesTab = () => {
+  const dispatch = useDispatch();
+  const { uid } = useParams();
+  const { currentProcess, loading } = useSelector(({ processes }) => processes);
+  const [params, setParams] = useState({ page: 1, size: 25 });
+  const exportFileLog = useExportFileLog(['Заявка на зміну СВБ']);
+
+  useEffect(() => {
+    handleUpdateList();
+  }, [dispatch, params]);
+
+  const handleUpdateList = () => {
+    dispatch(getChangeSupplierFiles(uid, params));
+  };
+
+  const handleDownloadFile = (file) => {
+    dispatch(downloadProcessFileById(file?.file_id, file?.file_name));
+    exportFileLog(uid);
+  };
+
+  return (
+    <div>
+      <UploadedFilesTable
+        files={currentProcess?.files?.data || []}
+        handleDownload={handleDownloadFile}
+        handleUpdateList={handleUpdateList}
+      />
+      <Pagination
+        {...currentProcess?.files}
+        loading={loading}
+        params={params}
+        onPaginate={(v) => {
+          setParams({ ...params, ...v });
+        }}
+      />
+    </div>
+  );
+};
+
+export default FilesTab;

@@ -1,0 +1,43 @@
+.ql-container.ql-snow {
+    height: calc(100% - 42px);
+}
+
+.ql-snow .ql-tooltip[data-mode=link]::before {
+    content: 'Введіть лінк:';
+}
+
+.ql-snow .ql-tooltip.ql-editing a.ql-action::after {
+    content: 'Зберегти';
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+    content: 'Заголовок 1';
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+    content: 'Заголовок 2';
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+    content: 'Заголовок 3';
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
+    content: 'Заголовок 4';
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="5"]::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="5"]::before {
+    content: 'Заголовок 5';
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="6"]::before, .ql-snow .ql-picker.ql-header .ql-picker-item[data-value="6"]::before {
+    content: 'Заголовок 6';
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label::before, .ql-snow .ql-picker.ql-header .ql-picker-item::before {
+    content: 'Звичайний';
+}
+
+.ql-snow .ql-picker.ql-header {
+    width: 120px;
+}

@@ -1,0 +1,1099 @@
+{
+  "TKO": {
+    "ACCESS": 1,
+    "LIST": {
+      "TABLE_CELLS": {
+        "CUSTOMER_STATUS": 1,
+        "TYPE_OF_SITE": 0,
+        "MP": 0,
+        "CONNECTION_STATUS": 0,
+        "CUSTOMER": 0,
+        "REGION": 0,
+        "CITY": 0,
+        "BALANCE_SUPPLIER": 0,
+        "METERED_DATA_RESPONSIBLE": 0,
+        "METERING_GRID_AREA_NAME": 0
+      },
+      "FUNCTIONS": {
+        "CLICK_BY_ROW": 0,
+        "DISABLED_SELECT": 2,
+        "POINT_TYPE_LIST": {
+          "INSTALLATION_AP": 0,
+          "GENERATION": 1,
+          "OWN_CONSUMPTION": 1,
+          "ACCUMULATION_CONSUMPTION": 1,
+          "GENERATION_UNIT": 1,
+          "TS_GENERATION_UNIT": 1,
+          "BY_VOLTAGE_LEVEL": 1,
+          "BY_GRID_PARTY": 1,
+          "QUEUE_GENERATION": 1,
+          "STANDARD_UNIT": 1,
+          "METER": 1,
+          "CONSUMPTION_FOR_NON_DOMESTIC_NEEDS": 1,
+          "CONSUMPTION_FOR_DOMESTIC_NEEDS": 1,
+          "CONSUMPTION_IN_STATIC_CAPACITOR": 1,
+          "CONSUMPTION": 1,
+          "RELEASE_GENERATION_UNIT": 1,
+          "LOSSES": 1
+        }
+      }
+    },
+    "TKO_DETAIL": {
+      "ACCESS": 1,
+      "CONTROLS": {
+        "DKO_VIEW": 0,
+        "INIT_DISPUTE": 2,
+        "DOWNLOAD_TKO": 2
+      },
+      "FIELDS": {
+        "GENERAL_CHARACTERISTICS": {
+          "ACCESS": 0,
+          "EIC": 0,
+          "PointType": 0,
+          "MeteringPointAmount": 0,
+          "SnapshotDate": 1,
+          "ValidityStartDate": 1,
+          "ValidityStartDateContract": 1,
+          "IDAPName": 0,
+          "ZvCodeAggregation": 1
+        },
+        "LOCATION": {
+          "ACCESS": 1,
+          "PostCode": 1,
+          "Region": 1,
+          "City": 1,
+          "AreaName": 1,
+          "LocalCommunity": 1,
+          "Street": 1,
+          "Building": 1,
+          "FloorIdentification": 1,
+          "RoomIdentification": 1,
+          "CadastralNumer": 1,
+          "System": 1,
+          "Latitude": 1,
+          "Longitude": 1,
+          "TerritoryType": 1,
+          "KATOTTG": 1
+        },
+        "PARTIES": {
+          "ACCESS": 1,
+          "FullName": 1,
+          "EIC": 1,
+          "ValidityStartDate": 1,
+          "SnapshotDate": 1,
+          "PartyRoleType": 1,
+          "METERED_DATA_RESPONSIBLE__NAME": 1,
+          "METERED_DATA_RESPONSIBLE__EIC": 1,
+          "METERED_DATA_COLLECTOR__ROLE": 1,
+          "METERED_DATA_COLLECTOR__NAME": 1,
+          "METERED_DATA_COLLECTOR__EIC": 1,
+          "METERED_DATA_AGGREGATOR__NAME": 1,
+          "METERED_DATA_AGGREGATOR__EIC": 1,
+          "METERING_POINT_ADMINISTRATOR__NAME": 1,
+          "METERING_POINT_ADMINISTRATOR__EIC": 1,
+          "METER_OPERATOR__NAME": 1,
+          "METER_OPERATOR__EIC": 1,
+          "METERED_RESPONSIBLE_PARTY__ROLE": 1,
+          "METERED_RESPONSIBLE_PARTY__NAME": 1,
+          "METERED_RESPONSIBLE_PARTY__EIC": 1
+        },
+        "CUSTOMER": {
+          "ACCESS": 1,
+          "CustomerStatus": 0,
+          "CustomerID": 1,
+          "CustomerType": 0,
+          "Country": 0,
+          "VerificationDate": 0,
+          "SUPPLY_CUSTOMER__STATUS": 1,
+          "SUPPLY_CUSTOMER__ID": 1,
+          "SUPPLY_CUSTOMER__TYPE_AREA": 1,
+          "SUPPLY_CUSTOMER__COUNTRY": 1,
+          "SUPPLY_CUSTOMER__VERIFICATION_DATE": 1
+        },
+        "NETWORK_ACCOUNTING_AREA": {
+          "ACCESS": 1,
+          "MeteringGridAreaIdentification": 0,
+          "MeteringGridAreaName": 0,
+          "AddMeteringGridAreaID": 1
+        },
+        "PHYSICAL_CHARACTERISTICS": {
+          "ACCESS": 1,
+          "ConnectionStatus": 0,
+          "DisconnectionMethod": 1,
+          "VoltageLevel": 1,
+          "SupplyStatus": 0,
+          "NumberOfPhases": 1,
+          "BookingPower": 1,
+          "ContractedConnectionCapacity": 1,
+          "GenPowerValidityFrom": 1,
+          "ConnectionCapacity": 1,
+          "SupportScheme": 1,
+          "BillingFrom": 1,
+          "ReliabilityCategory": 1,
+          "Generation": 0,
+          "Idap": 0,
+          "APProfileType": 0,
+          "ReferenceAp": 1,
+          "AutonomyOfWork": 1
+        },
+        "ADMINISTRATION_CHARACTERISTICS": {
+          "ACCESS": 0,
+          "MeteringMethod": 0,
+          "SettlementMethod": 0,
+          "AmrSystemID": 1,
+          "GridAgreementType": 1,
+          "InstallationPlace": 1,
+          "OperationMode": 1,
+          "NonSyncMeteringGridAreaID": 1,
+          "ActiveConsumer": 1
+        },
+        "PHYSICAL_CHARACTERISTICS_ZVT": {
+          "ACCESS": 1,
+          "Quantity": 1,
+          "Quantityg": 1,
+          "TypeOfAccountingPoint": 1,
+          "MeterReadingPeriodicity": 1,
+          "MeterDataCollectionMethod": 1,
+          "MeteredDataCollectionSchedule": 1,
+          "CmoCorrespond": 1,
+          "ApQuantity": 1,
+          "MeterRatedVoltage": 1,
+          "ACCESS_EIC": 1,
+          "ACCESS_EIC__METER_RATED_VOLTAGE": 1,
+          "ACCESS_EIC__METER_RATED_VOLTAGE_IDMP": 0,
+          "MeterUncomplianceType": 0,
+          "MeterEliminationMeasures": 0,
+          "MeterPlannedEliminationDate": 0,
+          "MeterActualEliminationDate": 0,
+          "CtUncomplianceType": 0,
+          "CtEliminationMeasures": 0,
+          "CtPlannedEliminationDate": 0,
+          "CtActualEliminationDate": 0,
+          "VtUncomplianceType": 0,
+          "VtEliminationMeasures": 0,
+          "VtPlannedEliminationDate": 0,
+          "VtActualEliminationDate": 0,
+          "OtherUncomplianceType": 0,
+          "OtherEliminationMeasures": 0,
+          "OtherPlannedEliminationDate": 0,
+          "OtherActualEliminationDate": 0
+        },
+        "ADDITIONAL_CHARACTERISTICS": {
+          "ACCESS": 0,
+          "BuildingType": 0,
+          "SupplyType": 0,
+          "PaymentType": 0,
+          "KVED": 1,
+          "InputOutputType": 1,
+          "GuaranteedCustomerBalancingGroup": 1
+        },
+        "ELECTRICAL_EQUIPMENT": {
+          "ACCESS": 1,
+          "GenPower": 0,
+          "NumberComissionLineup": 1,
+          "EIC": 1,
+          "GenerationType": 0,
+          "GenerationVoltageLevel": 0,
+          "Fuel": 0,
+          "GenerationPlace": 0,
+          "GenerationPower": 0,
+          "GenerationValidityFrom": 1,
+          "GenerationValidityTo": 0,
+          "GreenBillingFrom": 1,
+          "GreenBillingTo": 1,
+          "IdapValidityFrom": 0,
+          "IdapValidityTo": 0
+        },
+        "SPECIAL_EQUIPMENT": {
+          "ACCESS": 0,
+          "HeatingEquipment": 0,
+          "HotWaterSupplyEquipment": 0,
+          "FoodPreparationEquipment": 0
+        },
+        "VIRTUAL": {
+          "ACCESS": 1,
+          "label": 0,
+          "EIC": 0
+        },
+        "CHARACTERISTICS_IDENTIFICATION_CONSUMER": {
+          "ACCESS": 1,
+          "RELATED_SUBCUSTOMERS__ACCESS": 1,
+          "RELATED_SUBCUSTOMERS__IPN": 0,
+          "RELATED_SUBCUSTOMERS__COMMUNICATION_TYPE": 0,
+          "RELATED_SUBCUSTOMERS__VERIFICATION_DATE": 0
+        }
+      }
+    }
+  },
+  "PPKO": {
+    "ACCESS": 1,
+    "LIST": {
+      "CONTROLS": {
+        "SEND_PUBLICATION": 2,
+        "EDIT_EMAILS": 2
+      }
+    },
+    "HISTORY": {
+      "ACCESS": 2
+    },
+    "DETAIL": {
+      "CONTROLS": {
+        "DOWNLOAD": 0,
+        "CHECKS": 2,
+        "DOCUMENTATION": 2,
+        "EDIT": 2,
+        "HISTORY": 2
+      },
+      "FUNCTIONS": {
+        "SHOW_ADDITIONAL_INFO": 2
+      }
+    }
+  },
+  "AUDITS": {
+    "ACCESS": 2,
+    "EDIT": 2
+  },
+  "DIRECTORIES": {
+    "ACCESS": 1,
+    "Z_BINDING": {
+      "ACCESS": 1
+    },
+    "BSUS_AGGREGATED_GROUP": {
+      "ACCESS": 1
+    },
+    "SPECIAL_ACCOUNTING_AREAS": {
+      "ACCESS": 1
+    },
+    "GRID_ACCESS_PROVIDER": {
+      "ACCESS": 1,
+      "CONTROLS": {
+        "DOWNLOAD": 2
+      }
+    },
+    "SUPPLIERS": {
+      "ACCESS": 1,
+      "CONTROLS": {
+        "DOWNLOAD": 2
+      }
+    },
+    "COMPANIES": {
+      "ACCESS": 1,
+      "CONTROLS": {
+        "DOWNLOAD": 2
+      }
+    },
+    "DEFAULT": {
+      "ACCESS": 1,
+      "FUNCTIONS": {
+        "ADD": 2,
+        "ARCHIVE": 2
+      }
+    }
+  },
+  "INSTRUCTIONS": {
+    "ACCESS": 0,
+    "FUNCTIONS": {
+      "ADMIN": 2
+    },
+    "CONTROLS": {
+      "ADD": 2
+    }
+  },
+  "REPORTS": {
+    "ACCESS": 1
+  },
+  "SUPPLIERS": {
+    "ACCESS": 2,
+    "LIST": {
+      "CONTROLS": {
+        "CHANGE_STATUS": 2,
+        "DOWNLOAD": 2,
+        "REQUESTS": 2
+      },
+      "FUNCTIONS": {
+        "HISTORY": 2
+      }
+    }
+  },
+  "ZV": {
+    "ACCESS": 1
+  },
+  "GTS": {
+    "ACCESS": 1,
+    "FUNCTIONS": {
+      "REDIRECT_TO_REPORTS": 2
+    },
+    "TKO_LIST_VIEW": {
+      "ACCESS": 1,
+      "CONTROLS": {
+        "UPLOAD_DKO": 1,
+        "REGION_BALANCE": 2,
+        "DOWNLOAD_DKO": 0
+      },
+      "FUNCTIONS": {
+        "DOWNLOAD_DKO": 2,
+        "SHOW_Z": 0,
+        "SHOW_ZV": 1,
+        "SHOW_ZV_CUSTOM": 2,
+        "SHOW_JOURNAL": 2,
+        "POINT_TYPE_LIST": {
+          "INSTALLATION_AP": 0,
+          "GENERATION": 1,
+          "OWN_CONSUMPTION": 1,
+          "ACCUMULATION_CONSUMPTION": 1,
+          "GENERATION_UNIT": 1,
+          "TS_GENERATION_UNIT": 1,
+          "BY_VOLTAGE_LEVEL": 1,
+          "BY_GRID_PARTY": 1,
+          "QUEUE_GENERATION": 1,
+          "STANDARD_UNIT": 1
+        }
+      }
+    },
+    "FILES": {
+      "ACCESS": 0,
+      "CONTROLS": {
+        "UPLOAD": 2
+      },
+      "FUNCTIONS": {
+        "UPLOAD_RESULTS": 2
+      }
+    },
+    "VIEW_DKO": {
+      "ACCESS": 1,
+      "CONTROLS": {
+        "INIT_DISPUTE": 2
+      }
+    },
+    "REPORTS": {
+      "ACCESS": 1,
+      "CONTROLS": {
+        "CREATE_REPORT": 1,
+        "CREATE_AR_REPORT": 2
+      },
+      "TABLE_CELLS": {
+        "CANCEL": 1
+      },
+      "FUNCTIONS": {
+        "REPORT_MARKET_FILTER": {
+          "BY_EIC": 1,
+          "BY_ZV": 1,
+          "BY_COMPONENTS_ZV": 1,
+          "BY_PROPERTIES": 1,
+          "BY_RELEASE": 1,
+          "BY_LAST_AGG_MMS": 2,
+          "BY_LAST_RELEASE": 2
+        }
+      }
+    },
+    "INFO_UPLOADED_DKO": {
+      "ACCESS": 2
+    }
+  },
+  "DISPUTES": {
+    "ACCESS": 2,
+    "LIST": {
+      "TABLE_FILTERS": {
+        "EXECUTOR_COMPANY": 0,
+        "DISPUTES_TYPE": 0,
+        "FINISHED_AT": 0,
+        "MUST_BE_FINISHED_AT": 0,
+        "CONTINUED": 0,
+        "AKO": 2
+      }
+    },
+    "TKO_ENTITY": {
+      "ACCESS": 2,
+      "TABS": {
+        "CHARS": {
+          "ACCESS": 0
+        },
+        "FILES": {
+          "ACCESS": 0
+        },
+        "HISTORY": {
+          "ACCESS": 0
+        },
+        "AKO": {
+          "ACCESS": 0,
+          "FUNCTIONS": {
+            "ADD_DECISION": 2
+          }
+        }
+      },
+      "FIELDS": {
+        "INITIATOR": 0,
+        "EXECUTOR_COMPANY": 0,
+        "INITIATOR_EMAIL": 0,
+        "INITIATOR_PHONE": 0,
+        "CREATED_AT": 0,
+        "EIC": 0,
+        "TKO_RANGE": 0,
+        "PROPERTIES_COUNT": 0,
+        "MUST_BE_FINISHED_AT": 0,
+        "FINISHED_AT": 0,
+        "CANCELED_AT": 0,
+        "AKO": 2
+      },
+      "CONTROLS": {
+        "TO_WORK": 2,
+        "PROCESSED": 2,
+        "CONTINUE": 2,
+        "UPLOAD": 2,
+        "CANCEL": 2,
+        "REPROCESSING": 2,
+        "APPROVE": 2,
+        "RESOLVED": 2,
+        "TRANSFER_TO_AKO": 2,
+        "AKO_TO_WORK": 2,
+        "UPLOAD_AKO": 2,
+        "AKO_RESOLVED": 2
+      }
+    },
+    "DKO_ENTITY": {
+      "ACCESS": 2,
+      "TABS": {
+        "PROPOSE": {
+          "ACCESS": 0
+        },
+        "CONFLICT": {
+          "ACCESS": 0
+        },
+        "FILES": {
+          "ACCESS": 0
+        },
+        "HISTORY": {
+          "ACCESS": 0
+        },
+        "AKO": {
+          "ACCESS": 0,
+          "FUNCTIONS": {
+            "ADD_DECISION": 2
+          }
+        }
+      },
+      "CONTROLS": {
+        "TO_WORK": 2,
+        "PROCESSED": 2,
+        "CONTINUE": 2,
+        "UPLOAD": 2,
+        "CANCEL": 2,
+        "REPROCESSING": 2,
+        "APPROVE": 2,
+        "RESOLVED": 2,
+        "TRANSFER_TO_AKO": 2,
+        "AKO_TO_WORK": 2,
+        "UPLOAD_AKO": 2,
+        "AKO_RESOLVED": 2
+      },
+      "FIELDS": {
+        "INITIATOR": 0,
+        "EXECUTOR_COMPANY": 0,
+        "INITIATOR_EMAIL": 0,
+        "INITIATOR_PHONE": 0,
+        "CREATED_AT": 0,
+        "EIC": 0,
+        "DKO_RANGE": 0,
+        "MUST_BE_FINISHED_AT": 0,
+        "FINISHED_AT": 0,
+        "CANCELED_AT": 0,
+        "DKO_RELEASE": 0,
+        "DKO_VERSION": 0,
+        "AKO": 2
+      }
+    }
+  },
+  "PROCESS_MANAGER": {
+    "ACCESS": 2
+  },
+  "PROCESS_SETTINGS": {
+    "ACCESS": 2,
+    "IS_AKO_USERS": 2
+  },
+  "TIME_SERIES": {
+    "ACCESS": 1
+  },
+  "MONITORING_DKO": {
+    "ACCESS": 1,
+    "FUNCTIONS": {
+      "SHOW_TAB_REQUESTS_INSTEAD_TABS_Z_ZV": 2,
+      "SHOW_TAB_CHECK_DKO_Z": 2
+    },
+    "DETAILS": {
+      "ACCESS": 2,
+      "TABLE_CELLS": {
+        "SELECT": 2,
+        "SEND": 2
+      }
+    }
+  },
+  "CONSTRUCTOR_ZV": {
+    "ACCESS": 1
+  },
+  "USER_MANAGE": {
+    "ACCESS": 1,
+    "CONTROLS": {
+      "ADD_USER": 2
+    },
+    "FUNCTIONS": {
+      "ARCHIVE": 2,
+      "EDIT_USER": 2
+    }
+  },
+  "ROLES_MANAGE": {
+    "ACCESS": 1
+  },
+  "PROCESSES": {
+    "LIST": {
+      "ACCESS": 1,
+      "CONTROLS": {
+        "EXPORT": 2
+      }
+    },
+    "PON": {
+      "INITIALIZATION": 1,
+      "MAIN": {
+        "ACCESS": 1,
+        "FUNCTIONS": {
+          "SHOW_DETAILS": 1
+        },
+        "CONTROLS": {
+          "DELEGATE": 1
+        }
+      },
+      "INFORMING": {
+        "ACCESS": 1,
+        "CONTROLS": {
+          "GENERATE_FILES": 2
+        }
+      },
+      "PROVIDE_ACTUAL_DKO": {
+        "ACCESS": 1
+      },
+      "REQUEST_ACTUAL_DKO": {
+        "ACCESS": 1,
+        "CONTROLS": {
+          "DOWNLOAD": 0,
+          "UPLOAD": 1
+        }
+      },
+      "REQUEST_HISTORICAL_DKO": {
+        "ACCESS": 1,
+        "CONTROLS": {
+          "DOWNLOAD": 0,
+          "UPLOAD": 1
+        }
+      },
+      "REQUEST_TKO_DATA": {
+        "ACCESS": 1,
+        "CONTROLS": {
+          "START": 2,
+          "TKO_MISSING": 2,
+          "DELETE_ALL_TKO": 2,
+          "DONE": 0,
+          "UPLOAD": 2,
+          "DELEGATE": 2
+        }
+      }
+    },
+    "END_OF_SUPPLY": {
+      "INITIALIZATION": 2,
+      "MAIN": {
+        "ACCESS": 1,
+        "CONTROLS": {
+          "UPLOAD": 2,
+          "DELEGATE": 2
+        }
+      }
+    },
+    "PROLONGATION_SUPPLY": {
+      "INITIALIZATION": 2,
+      "ACCESS": 1,
+      "CONTROLS": {
+        "DELEGATE": 2
+      }
+    },
+    "CHANGE_SUPPLIER": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2,
+      "CONTROLS": {
+        "DELEGATE": 2
+      },
+      "PREDICTABLE": {
+        "ACCESS": 2,
+        "CONTROLS": {
+          "DELEGATE": 2
+        }
+      },
+      "INFORMING_AKO": {
+        "ACCESS": 1
+      },
+      "INFORMING_AKO_DETAIL": {
+        "ACCESS": 1
+      },
+      "INFORMING_ATKO": {
+        "ACCESS": 2,
+        "FIELDS": {
+          "INITIATOR": 2,
+          "EIC": 2,
+          "USREOU": 2,
+          "CREATED_AT": 0,
+          "CANCELED_AT": 0,
+          "CHANGED_SUPPLIER_AT": 0,
+          "INITIATOR_COMPANY_NAME": 2,
+          "EXECUTOR": 0,
+          "FINISHED_AT": 0,
+          "MUST_BE_FINISHED_AT": 0
+        }
+      },
+      "INFORMING_SUPPLIER": {
+        "ACCESS": 2,
+        "FIELDS": {
+          "INITIATOR": 2,
+          "EIC": 2,
+          "USREOU": 2,
+          "CREATED_AT": 0,
+          "CANCELED_AT": 0,
+          "CHANGED_SUPPLIER_AT": 0,
+          "INITIATOR_COMPANY_NAME": 2,
+          "EXECUTOR": 0,
+          "FINISHED_AT": 0,
+          "MUST_BE_FINISHED_AT": 0
+        }
+      }
+    },
+    "MMS": {
+      "INITIALIZATION": 1,
+      "CONTROLS": {
+        "UPLOAD": 2,
+        "UPLOAD_ZV": 2
+      }
+    },
+    "CANCEL_PPKO_REGISTRATION": {
+      "INITIALIZATION": 2,
+      "ACCESS": 1,
+      "IS_PPKO": 2,
+      "REQUEST_BY_PPKO": {
+        "ACCESS": 2
+      },
+      "EXPIRE": {
+        "ACCESS": 1
+      },
+      "CONTROLS": {
+        "DELEGATE": 2
+      }
+    },
+    "CHANGE_PPKO": {
+      "INITIALIZATION": 2,
+      "MAIN": {
+        "ACCESS": 2,
+        "CONTROLS": {
+          "TO_WORK": 0,
+          "CANCEL": 2,
+          "UPLOAD": 2,
+          "FORMED": 2,
+          "DELEGATE": 2
+        },
+        "TABLE_CELLS": {
+          "ID": 0,
+          "NAME": 0,
+          "IS_FINISHED": 0,
+          "CREATED_AT": 0,
+          "MUST_BE_FINISHED_AT": 0,
+          "FINISHED_AT": 0,
+          "LINK": 2
+        }
+      },
+      "APPROVE": {
+        "ACCESS": 2
+      },
+      "TO_OS": {
+        "INITIALIZATION": 2,
+        "ACCESS": 2
+      }
+    },
+    "CHANGE_MAIN_DATA_TKO": {
+      "INITIALIZATION": 1,
+      "ACCESS": 1,
+      "CONTROLS": {
+        "CREATE": 1,
+        "UPLOAD": 0,
+        "CANCEL": 0,
+        "DONE": 0,
+        "DELEGATE": 1
+      }
+    },
+    "NEW_AP_PROPERTIES": {
+      "INITIALIZATION": 0,
+      "ACCESS": 0,
+      "CONTROLS": {
+        "CREATE": 0
+      }
+    },
+    "EXPORT_OWN_TKO": {
+      "INITIALIZATION": 1,
+      "ACCESS": 1,
+      "CONTROLS": {
+        "CREATE": 2
+      },
+      "FIELDS": {
+        "EXECUTOR": 0,
+        "EIC": 0,
+        "USREOU": 0,
+        "CREATED_AT": 0,
+        "FINISHED_AT": 0,
+        "EXECUTOR_COMPANY": 0,
+        "TYPE_REPORT": 0,
+        "AP_TYPE": 0,
+        "CAPACITY": 0,
+        "SEARCH_BY": 0,
+        "PERIOD_INFO_FROM": 0,
+        "PERIOD_INFO_TO": 0,
+        "TKO_LIST": 1,
+        "SELECT_ATKO": 1,
+        "SELECT_SUPPLIER": 1
+      },
+      "FUNCTIONS": {
+        "CREATE_PROCESS_AS__BALANCE_SUPPLIER": 2,
+        "CREATE_PROCESS_AS__TKO_HISTORY": 2,
+        "CREATE_PROCESS_AS__GARPOK": 2
+      }
+    },
+    "CREATE_TKO": {
+      "INITIALIZATION": 2,
+      "ACCESS": 1,
+      "CONTROLS": {
+        "CANCEL": 0,
+        "DELETE_FILES": 0,
+        "UPLOAD": 0,
+        "DONE": 2,
+        "DELEGATE": 0
+      }
+    },
+    "CONNECTING_DISCONNECTING": {
+      "INITIALIZATION": 2,
+      "ACCESS": 1,
+      "CONTROLS": {
+        "DELEGATE": 2
+      }
+    },
+    "DISPUTE_TKO": {
+      "INITIALIZATION": 2,
+      "INIT_PAGE": {
+        "FUNCTIONS": {
+          "CAN_SELECT_COMPANY": 2
+        }
+      },
+      "MAIN": {
+        "ACCESS": 1,
+        "TABS": {
+          "DATA": {
+            "ACCESS": 0
+          },
+          "FILES": {
+            "ACCESS": 0
+          },
+          "REQUESTS": {
+            "ACCESS": 0,
+            "TABLE_CELLS": {
+              "EXECUTOR_COMPANY": 0,
+              "IN_WORK": 0,
+              "IS_ANSWERED": 0,
+              "STARTED_AT": 0,
+              "FINISHED_AT": 0,
+              "LINK": 1
+            }
+          }
+        },
+        "CONTROLS": {
+          "DELEGATE": 2
+        }
+      },
+      "SUBPROCESSES": {
+        "ACCESS": 1,
+        "CONTROLS": {
+          "DELEGATE": 2
+        }
+      }
+    },
+    "RECEIVING_DKO_ACTUAL": {
+      "INITIALIZATION": 2,
+      "MAIN": {
+        "ACCESS": 1,
+        "CONTROLS": {
+          "UPLOAD": 2,
+          "CANCEL": 2,
+          "FORM": 0,
+          "DOWNLOAD": 0
+        },
+        "TABS": {
+          "DETAILS": {
+            "ACCESS": 0
+          },
+          "FILES": {
+            "ACCESS": 0
+          },
+          "REQUESTS": {
+            "ACCESS": 0,
+            "TABLE_CELLS": {
+              "EXECUTOR_COMPANY": 0,
+              "IN_WORK": 0,
+              "ANSWER": 0,
+              "CREATED_AT": 0,
+              "FINISHED_AT": 0,
+              "LINK": 1
+            }
+          }
+        }
+      }
+    },
+    "GRANTING_AUTHORITY": {
+      "INITIALIZATION": 2,
+      "MAIN": {
+        "ACCESS": 1,
+        "CONTROLS": {
+          "FORMING": 2,
+          "UPLOAD": 2,
+          "DOWNLOAD_TIME_ROWS": 2,
+          "DOWNLOAD_TKO": 2,
+          "DELEGATE": 2
+        },
+        "TABS": {
+          "DATA": {
+            "ACCESS": 0
+          },
+          "FILES": {
+            "ACCESS": 0
+          },
+          "GENERATED_TKO": {
+            "ACCESS": 0
+          },
+          "HISTORICAL_DKO": {
+            "ACCESS": 0,
+            "TABLE_CELLS": {
+              "EXECUTOR_COMPANY_NAME": 0,
+              "ID": 0,
+              "STARTED": 0,
+              "ANSWER": 0,
+              "STARTED_AT": 0,
+              "MUST_BE_FINISHED_AT": 0,
+              "LINK": 1
+            }
+          }
+        }
+      }
+    },
+    "TERMINATION_RESUMPTION": {
+      "INITIALIZATION": 2,
+      "MAIN": {
+        "ACCESS": 1,
+        "TABS": {
+          "DATA": {
+            "ACCESS": 0
+          },
+          "FILES": {
+            "ACCESS": 0
+          },
+          "REQUESTS": {
+            "ACCESS": 0,
+            "TABLE_CELLS": {
+              "EXECUTOR_COMPANY": 0,
+              "ANSWER": 0,
+              "CREATED_AT": 0,
+              "COMPLETED_AT": 0,
+              "LINK": 1
+            }
+          }
+        },
+        "CONTROLS": {
+          "DELEGATE": 2
+        }
+      }
+    },
+    "RECEIVING_DKO_HISTORICAL": {
+      "INITIALIZATION": 2,
+      "MAIN": {
+        "ACCESS": 1,
+        "CONTROLS": {
+          "UPLOAD": 2,
+          "CANCEL": 2,
+          "DONE": 0,
+          "DOWNLOAD": 0
+        },
+        "TABS": {
+          "DETAILS": {
+            "ACCESS": 0
+          },
+          "FILES": {
+            "ACCESS": 0
+          },
+          "REQUESTS": {
+            "ACCESS": 0,
+            "TABLE_CELLS": {
+              "EXECUTOR_COMPANY": 0,
+              "IN_WORK": 0,
+              "ANSWER": 0,
+              "CREATED_AT": 0,
+              "FINISHED_AT": 0,
+              "LINK": 1
+            }
+          }
+        }
+      }
+    },
+    "ADDING_NEW_VIRTUAL_TKO": {
+      "INITIALIZATION": 2,
+      "ACCESS": 1,
+      "CONTROLS": {
+        "DELEGATE": 2
+      }
+    },
+    "EXPORT_AP_GENERATION": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2,
+      "CONTROLS": {
+        "DELEGATE": 2
+      }
+    },
+    "BIND_ACCOUNTING_POINT_ZV": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2
+    },
+    "BIND_ACCOUNTING_POINT": {
+      "INITIALIZATION": 2,
+      "ACCESS": 1
+    },
+    "DELETING_TKO": {
+      "INITIALIZATION": 2,
+      "IS_AKO_PROCESSES": 2,
+      "ACCESS": 1,
+      "CONTROLS": {
+        "DELEGATE": 2
+      },
+      "FIELDS": {
+        "INITIATON_PROCESS": 1,
+        "DOCUMENT": 1
+      },
+      "FUNCTIONS": {
+        "MIN_PLANNED_DATE": 0
+      }
+    },
+    "CHANGE_ACCOUNTING_GROUP_ZV": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2,
+      "CONTROLS": {
+        "DELEGATE": 2
+      }
+    },
+    "UPDATE_RELATED_SUBCUSTOMERS": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2,
+      "CONTROLS": {
+        "DELEGATE": 2
+      }
+    },
+    "ACTIVATING_DEACTIVATING": {
+      "INITIALIZATION": 2,
+      "ACCESS": 1,
+      "ACTIVATING_REQUEST": {
+        "ACCESS": 1
+      }
+    },
+    "REQUEST_ACTUALIZATION_TKO": {
+      "ACCESS": 2,
+      "CONTROLS": {
+        "DELEGATE": 2
+      }
+    },
+    "UPDATE_AP_HISTORY": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2
+    },
+    "ERP_REPORT": {
+      "INITIALIZATION": 1,
+      "ACCESS": 1
+    },
+    "METER_READING": {
+      "INITIALIZATION": 2,
+      "SUBPROCESS": {
+        "ACCESS": 2
+      }
+    },
+    "ENTERING_AP": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2
+    },
+    "REPORT_GREXEL": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2
+    },
+    "UPDATE_APS_HISTORY": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2,
+      "IS_AKO_PROCESSES": 2
+    },
+    "CHANGE_PAYMENT_TYPE": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2
+    },
+    "CORRECTION_ARCHIVING_TS": {
+      "INITIALIZATION": 2,
+      "ACCESS": 2,
+      "SUBPROCESS": {
+        "ACCESS": 2
+      }
+    },
+    "ACTIVE_CUSTOMER_AP": {
+      "INITIALIZATION": 0,
+      "ACCESS": 0
+    },
+    "TRANSFER_TS_TO_GREXEL": {
+      "INITIALIZATION": 0,
+      "ACCESS": 0
+    }
+  },
+  "USERS_DIRECTORY": {
+    "ACCESS": 2,
+    "CONTROLS": {
+      "DOWNLOAD_REPORT": 2
+    }
+  },
+  "METER_READING": {
+    "ACCESS": 2,
+    "SEND_DATA": {
+      "ACCESS": 2,
+      "CONTROLS": {
+        "UPLOAD": 2
+      }
+    },
+    "VIEW_DATA": {
+      "FUNCTIONS": {
+        "FILTERS": 2
+      }
+    }
+  },
+  "TECH_WORK": {
+    "ACCESS": 2
+  },
+  "ACTIONS_LOG": {
+    "ACCESS": 2
+  },
+  "PUBLICATION_CMD": {
+    "ACCESS": 2,
+    "CONTROLS": {
+      "UPLOAD": 2
+    },
+    "TABS": {
+      "THERMS": 2,
+      "FILES": 2
+    }
+  },
+  "FAQ": {
+    "ACCESS": 0,
+    "ADMIN": 2
+  },
+  "SERVICE_TERMINATION_REQUEST": {
+    "INITIALIZATION": 2,
+    "ACCESS": 2
+  }
+}

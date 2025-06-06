@@ -1,0 +1,10 @@
+import i18n from '../../../i18n/i18n';
+
+export const REASONS = {
+  PPKO_REQUEST: i18n.t('CANCEL_PPKO_REASONS.PPKO_REQUEST'),
+  VIOLATION_CCA: i18n.t('CANCEL_PPKO_REASONS.VIOLATION_CCA')
+};
+
+export const ERRORS = {
+  REQUIRED_FIELD: i18n.t('VERIFY_MSG.REQUIRED_FIELD')
+};
