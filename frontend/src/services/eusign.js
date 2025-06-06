@@ -10,7 +10,7 @@ class EUSignService {
    * AutoSelectKeyStore/AutoDetectKeyStore (если они существуют).
    * В противном случае применяются настройки ЦСК по его идентификатору.
    */
-  async configureKeyStore(caId, autoDetect) {
+  async configureKeyStore(autoDetect) {
     await this.init();
 
     if (autoDetect) {
@@ -22,44 +22,6 @@ class EUSignService {
         await this.#eu.AutoDetectKeyStore();
         return;
       }
-    }
-
-    if (!caId) return;
-
-    try {
-      const resp = await fetch('/eusign/data/CAs.json');
-      const list = await resp.json();
-      const ca = list.find(
-        (c) => c.address === caId || c.codeEDRPOU === caId
-      );
-      if (ca && typeof this.#eu.SetCASettings === 'function') {
-        // Используем общие CA-файлы, но устанавливаем прямые адреса сервера
-        await this.#eu.SetCASettings('/eusign/data/', '/eusign/data/CACertificates.p7b');
-        if (this.#eu.SetOCSPSettings) {
-          const ocsp = this.#eu.CreateOCSPSettings();
-          ocsp.SetUseOCSP(true);
-          ocsp.SetBeforeStore(true);
-          ocsp.SetAddress(ca.ocspAccessPointAddress || '');
-          ocsp.SetPort(ca.ocspAccessPointPort || '80');
-          await this.#eu.SetOCSPSettings(ocsp);
-        }
-        if (this.#eu.SetCMPSettings) {
-          const cmp = this.#eu.CreateCMPSettings();
-          cmp.SetUseCMP(true);
-          cmp.SetAddress(ca.cmpAddress || '');
-          cmp.SetPort('80');
-          await this.#eu.SetCMPSettings(cmp);
-        }
-        if (this.#eu.SetTSPSettings) {
-          const tsp = this.#eu.CreateTSPSettings();
-          tsp.SetGetStamps(true);
-          tsp.SetAddress(ca.tspAddress || '');
-          tsp.SetPort(ca.tspAddressPort || '80');
-          await this.#eu.SetTSPSettings(tsp);
-        }
-      }
-    } catch (e) {
-      console.error('Failed to configure CA settings:', e);
     }
   }
 
@@ -110,8 +72,8 @@ class EUSignService {
    * (EndUser.ReadPrivateKey() умеет работать сразу, если перед этим вызвана SelectKeyStore или AutoDetectKeyStore,
    * но в нашей логике мы просто загружаем файл и передаём его напрямую)
    */
-  async readPrivateKeyFile(file, password, caId, autoDetect = false) {
-    await this.configureKeyStore(caId, autoDetect);
+  async readPrivateKeyFile(file, password, autoDetect = false) {
+    await this.configureKeyStore(autoDetect);
     const buf = await file.arrayBuffer();
     await this.#eu.ReadPrivateKeyBinary(password, new Uint8Array(buf));
   }
@@ -124,8 +86,8 @@ class EUSignService {
    * Выбирает токен (index) и читает приватный ключ по паролю.
    * Если те методы в вашей библиотеке называются иначе — замените на эквивалент.
    */
-  async selectTokenProvider(index, password, caId, autoDetect = false) {
-    await this.configureKeyStore(caId, autoDetect);
+  async selectTokenProvider(index, password, autoDetect = false) {
+    await this.configureKeyStore(autoDetect);
     await this.#eu.SelectProtectedCMSProvider(index);
     await this.#eu.ReadPrivateKey(password);
   }
@@ -179,6 +141,23 @@ class EUSignService {
     await this.init();
     const cmsBase64 = await this.#eu.MakeCMS(challengeUint8, true);
     return cmsBase64;
+  }
+
+  /** Возвращает информацию из сертификата прочитанного приватного ключа */
+  async getUserInfo() {
+    await this.init();
+    const cert = await this.#eu.GetOwnCertificate(
+      window.EU_CERT_KEY_TYPE_DSTU4145,
+      window.EU_KEY_USAGE_DIGITAL_SIGNATURE
+    );
+    const info = cert.GetInfoEx();
+    return {
+      commonName: info.GetSubjCN(),
+      fullName: info.GetSubjFullName(),
+      edrpou: info.GetSubjEDRPOUCode(),
+      drfo: info.GetSubjDRFOCode(),
+      issuer: info.GetIssuerCN()
+    };
   }
 }
 
