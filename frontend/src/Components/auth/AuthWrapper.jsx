@@ -139,7 +139,7 @@ export const AuthWrapper = ({ title, children, btnText, btnIcon, onClick, disabl
           )}
         </div>
       </div>
-      <EsignLogin onSuccess={() => console.log(123)} />
+      <EsignLogin />
     </div>
   );
 };
