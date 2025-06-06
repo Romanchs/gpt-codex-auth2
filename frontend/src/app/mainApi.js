@@ -24,7 +24,10 @@ export const mainApi = createApi({
   baseQuery: checkRefreshQuery,
   endpoints: (build) => ({
     esignChallenge: build.mutation({
-      query: () => ({ url: '/ms-users/api/v1/token/esign/challenge/', method: 'POST' })
+      query: ({ state }) => ({
+        url: `/ms-users/api/v1/token/esign/challenge/?state=${encodeURIComponent(state)}`,
+        method: 'POST'
+      })
     }),
     esignLogin: build.mutation({
       query: ({ state, ...body }) => ({

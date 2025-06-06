@@ -113,12 +113,14 @@ export default function EsignLogin({ onSuccess }) {
   // ========== Обработчик кнопки "Увійти КЕП" ==========
   const handleSubmit = async () => {
     try {
-      // 1) Запрашиваем challenge + state у бэкенда
-      const response = await getChallenge().unwrap();
+      // 1) Генерируем state и запрашиваем challenge у бэкенда
+      const generatedState = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      const response = await getChallenge({ state: generatedState }).unwrap();
       console.log(response);
       // Ожидаем { challenge: "Base64...", state: "randomString" }
-      const { challenge, state } = response;
-      setChallengeData({ challenge, state });
+      const { challenge, state: returnedState } = response;
+      const stateValue = returnedState || generatedState;
+      setChallengeData({ challenge, state: stateValue });
 
       // 2) Переводим Base64 → Uint8Array
       const challengeUint8 = Uint8Array.from(atob(challenge), (c) => c.charCodeAt(0));
@@ -159,7 +161,7 @@ export default function EsignLogin({ onSuccess }) {
         payload.ca = detectAutoCa ? 'auto' : selectedCaId;
       }
       // 6) Отправляем confirm-запрос на бэкенд
-      const { access, refresh } = await loginEsign({ ...payload, state }).unwrap();
+      const { access, refresh } = await loginEsign({ ...payload, state: stateValue }).unwrap();
 
       // 7) Сохраняем токены и вызываем onSuccess
       localStorage.setItem('auth_token', access);
