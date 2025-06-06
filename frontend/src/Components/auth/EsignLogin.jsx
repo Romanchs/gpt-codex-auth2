@@ -40,9 +40,9 @@ export default function EsignLogin({ onSuccess }) {
   const [getChallenge] = useEsignChallengeMutation();
   const [loginEsign] = useEsignLoginMutation();
 
-  // ========== Загрузка CA-списка при входе в режим FILE ==========
+  // ========== Загрузка CA-списка при входе в режим FILE или TOKEN ==========
   useEffect(() => {
-    if (mode === MODES.file) {
+    if (mode === MODES.file || mode === MODES.token) {
       (async () => {
         try {
           // 7.1) Получаем JSON-файл: предполагаем, что он лежит по пути /public/eusign/data/CAs.json
